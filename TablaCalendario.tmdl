@@ -1,0 +1,76 @@
+table TablaCalendario
+	lineageTag: ccadcebe-15c2-4248-85bc-b8639de6218b
+
+	column Date
+		formatString: General Date
+		lineageTag: 0b6d4af8-c610-4ba5-9ef0-0fcc7a2db595
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variación
+			isDefault
+			relationship: 1ef7064f-aee6-40c7-a5a4-1f51457b7750
+			defaultHierarchy: LocalDateTable_e86045fa-0d5e-48bd-9db2-78c38996cb8b.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Año
+		formatString: 0
+		lineageTag: 3d78ab2f-1806-482f-aeed-5c4783eef18f
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Año]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes
+		lineageTag: 7770df64-fc6b-4657-bff0-e3538e9fc862
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Mes]
+
+		annotation SummarizationSetBy = Automatic
+
+	column NúmeroMes
+		formatString: 0
+		lineageTag: 3d49853b-d632-4e28-840d-cb69a49e7933
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [NúmeroMes]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trimestre
+		lineageTag: 4d83e0c0-508d-4d0c-91ff-a30f26cc5592
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Trimestre]
+
+		annotation SummarizationSetBy = Automatic
+
+	column NombreDía
+		lineageTag: 28203765-4515-49fa-b4dc-2eb9bb9e7f25
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NombreDía]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition TablaCalendario = calculated
+		mode: import
+		source = ```
+				
+				ADDCOLUMNS(
+				    CALENDAR(DATE(2025, 1, 1), DATE(2025, 12, 31)),
+				    "Año", YEAR([Date]),
+				    "Mes", FORMAT([Date], "MMMM"),
+				    "NúmeroMes", MONTH([Date]),
+				    "Trimestre", "T" & FORMAT([Date], "Q"),
+				    "NombreDía", FORMAT([Date], "dddd")
+				)
+				
+				```
+
+	annotation PBI_Id = bb3b1097f322441987b6972f72bbccdd
+

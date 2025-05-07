@@ -1,0 +1,75 @@
+table 'Medidas SIMPLES'
+	lineageTag: a95563d9-c229-4fc6-a3cc-0ecfca939dfa
+
+	measure Baja = ```
+			CALCULATE(COUNTROWS('IMPLEMENTACION BOARD'), 'IMPLEMENTACION BOARD'[Board Column] = "Baja")
+			
+			```
+		formatString: 0
+		lineageTag: 73965b79-6aa9-4f90-a452-0c8a03da6d3f
+
+	measure 'En Curso' = ```
+			CALCULATE(COUNTROWS('IMPLEMENTACION BOARD'), 'IMPLEMENTACION BOARD'[Board Column] = "En Curso")
+			
+			```
+		formatString: 0
+		lineageTag: e341af27-afa4-4470-88b3-672703b50f0f
+
+	measure 'Frenada por el Cliente' = CALCULATE(COUNTROWS('IMPLEMENTACION BOARD'), 'IMPLEMENTACION BOARD'[Board Column] = "Frenada por el Cliente")
+		formatString: 0
+		lineageTag: ad142532-7087-4c40-be00-2c2d64e42c05
+
+	measure 'Implementados Fase 1' = ```
+			CALCULATE(COUNTROWS('IMPLEMENTACION BOARD'), 'IMPLEMENTACION BOARD'[Board Column] = "Implementado Fase 1")
+			
+			```
+		formatString: 0
+		lineageTag: 4bb94d8a-3693-4993-acc0-5eea49a79286
+
+	measure 'Implementacion Completa' = CALCULATE(COUNTROWS('IMPLEMENTACION BOARD'), 'IMPLEMENTACION BOARD'[Board Column] = "Implementacion Completa")
+		formatString: 0
+		lineageTag: 0f289b23-6647-4135-884e-264b0ab7f8e5
+
+	measure 'Nuevo Cliente' = ```
+			CALCULATE(COUNTROWS('IMPLEMENTACION BOARD'), 'IMPLEMENTACION BOARD'[Board Column] = "Nuevo Cliente")
+			
+			
+			
+			```
+		formatString: 0
+		lineageTag: f0c2cf83-eefd-4ffc-8f77-1923a6ba4f7a
+
+	measure 'Sin Respuesta' = ```
+			CALCULATE(COUNTROWS('IMPLEMENTACION BOARD'), 'IMPLEMENTACION BOARD'[Board Column] = "Sin Respuesta")
+			
+			```
+		formatString: 0
+		lineageTag: 1064b1d8-5507-4559-8da7-17cce043a9b3
+
+	measure 'Link p/ version pdf ACÁ ↓' = "https://docs.google.com/spreadsheets/d/1eEskLr7bBHY5geZ9V7nYkx_mJbtO1QW32sLxfbcLF2A/edit?usp=sharing"
+		lineageTag: f757a600-eee0-4bc9-a5e8-40edee4934ee
+		dataCategory: WebUrl
+
+	measure 'Nuevas licencias' = CALCULATE(COUNTROWS('IMPLEMENTACION BOARD'), 'IMPLEMENTACION BOARD'[Board Column] = "Nuevas licencias")
+		formatString: 0
+		lineageTag: 980eee99-f1ac-4bfd-9213-a7f503b2957d
+
+	column zmedidas
+		isHidden
+		lineageTag: 8da31768-fa2a-4fab-b575-ce5d8de53e2a
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [zmedidas]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Medidas SIMPLES' = calculated
+		mode: import
+		source = ```
+				
+				ROW("zmedidas", "medida ejemplo")
+				
+				```
+
+	annotation PBI_Id = d99a05c5f216475684b3b740c53327de
+

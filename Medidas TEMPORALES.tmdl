@@ -1,0 +1,204 @@
+table 'Medidas TEMPORALES'
+	lineageTag: 62d4ac71-e8f1-4150-a707-ef919c07819f
+
+	measure 'En curso Pendientes Anteriores a Semana Pasada' = ```
+			
+			VAR StartOfLastWeek = TODAY() - WEEKDAY(TODAY(), 1) - 6
+			VAR EndOfLastWeek = TODAY() - WEEKDAY(TODAY(), 1)
+			
+			RETURN
+			CALCULATE(
+			    COUNTROWS('IMPLEMENTACION BOARD'),
+			    'IMPLEMENTACION BOARD'[Board Column] IN {
+			        "En Curso",
+			        "Frenada por el Cliente",
+			        "Sin Respuesta",
+			        "Nuevo Cliente",
+			        "Implementado Fase 1"
+			    },
+			    'IMPLEMENTACION BOARD'[Fecha de Inicio] < StartOfLastWeek
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: d8a40cb9-e047-45e4-a602-775ae606d5e3
+
+	measure 'En Curso MENOS de 20 días' = ```
+			
+			CALCULATE (
+			    COUNTROWS('IMPLEMENTACION BOARD'),
+			    'IMPLEMENTACION BOARD'[Fecha de Contratacion] >= TODAY() - 20,
+			    'IMPLEMENTACION BOARD'[Board Column] IN {"En Curso", "Nuevo Cliente"}
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 18766698-6c20-4728-b7c6-ae765361d5e2
+
+	measure 'En curso MÁS de 20 días' = ```
+			
+			CALCULATE (
+			    COUNTROWS('IMPLEMENTACION BOARD'),
+			    'IMPLEMENTACION BOARD'[Fecha de Contratacion] < TODAY() - 20,
+			    'IMPLEMENTACION BOARD'[Board Column] IN {"En Curso", "Nuevo Cliente"}
+			)
+			
+			```
+		formatString: 0
+		lineageTag: c373f01c-a51e-4fb4-a8d0-e24c34232db9
+
+	measure 'Total en seguimiento de Implementacion' = [En curso Semana Anterior] + [En curso Pendientes Anteriores a Semana Pasada]
+		lineageTag: 17868c10-6f85-48fb-8ffe-98dc5d545459
+
+	measure 'En curso Semana Anterior' = ```
+			
+			VAR StartOfLastWeek = TODAY() - WEEKDAY(TODAY(), 1) - 6
+			VAR EndOfLastWeek = TODAY() - WEEKDAY(TODAY(), 1)
+			
+			RETURN
+			CALCULATE(
+			    COUNTROWS('IMPLEMENTACION BOARD'),
+			    'IMPLEMENTACION BOARD'[Board Column] IN {
+			        "En Curso",
+			        "Frenada por el Cliente",
+			        "Sin Respuesta",
+			        "Nuevo Cliente",
+			        "Implementado Fase 1"
+			    },
+			    'IMPLEMENTACION BOARD'[Fecha de Inicio] >= StartOfLastWeek &&
+			    'IMPLEMENTACION BOARD'[Fecha de Inicio] <= EndOfLastWeek
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 4438b34d-4b0f-4978-8b46-942047ee81ac
+
+	measure 'Clientes Nuevos MES' =
+			
+			VAR CurrentMonth = MONTH(TODAY())
+			VAR CurrentYear = YEAR(TODAY())
+			RETURN
+			CALCULATE (
+			    COUNTROWS ('IMPLEMENTACION BOARD'),
+			    FILTER (
+			        'IMPLEMENTACION BOARD',
+			        MONTH ( 'IMPLEMENTACION BOARD'[Fecha de Contratacion] ) = CurrentMonth &&
+			        YEAR ( 'IMPLEMENTACION BOARD'[Fecha de Contratacion] ) = CurrentYear
+			    )
+			)
+		formatString: 0
+		lineageTag: 4b24493b-117b-4fca-ae28-e43b518747a1
+
+	measure 'Implementaciones Completadas Mes' =
+			
+			VAR CurrentMonth = MONTH(TODAY())
+			VAR CurrentYear = YEAR(TODAY())
+			RETURN
+			CALCULATE(
+			    COUNTROWS('IMPLEMENTACION BOARD'),
+			    'IMPLEMENTACION BOARD'[Board Column] = "Implementacion Completa",
+			    MONTH('IMPLEMENTACION BOARD'[Fecha Implementado]) = CurrentMonth,
+			    YEAR('IMPLEMENTACION BOARD'[Fecha Implementado]) = CurrentYear
+			)
+		formatString: 0
+		lineageTag: bdc7180c-ab3f-4538-9bc6-0d657fac9306
+
+	measure 'Implementaciones Completadas Mes Anterior' = ```
+			
+			CALCULATE(
+			    COUNTROWS('IMPLEMENTACION BOARD'),
+			    'IMPLEMENTACION BOARD'[Board Column] = "Implementacion Completa",
+			    MONTH('IMPLEMENTACION BOARD'[Fecha Implementado]) = IF(MONTH(TODAY()) - 1 = 0, 12, MONTH(TODAY()) - 1),
+			    YEAR('IMPLEMENTACION BOARD'[Fecha Implementado]) = IF(MONTH(TODAY()) - 1 = 0, YEAR(TODAY()) - 1, YEAR(TODAY()))
+			)
+			
+			```
+		formatString: 0
+		lineageTag: d91de7ae-60cf-4b0e-9790-a637c7aa08bd
+
+	measure 'HARDCODEADO KPI Implementaciones MENSUAL' =
+			
+			15
+		formatString: 0
+		lineageTag: a762a8a0-4269-4835-bf58-2045d74b9e8c
+
+	measure 'Clientes Nuevos MES ANTERIOR' = ```
+			
+			VAR CurrentDate = TODAY()
+			VAR PreviousMonthStart = EOMONTH(CurrentDate,-2) + 1
+			VAR PreviousMonthEnd = EOMONTH(CurrentDate, -1)
+			
+			RETURN
+			CALCULATE (
+			    COUNTROWS ('IMPLEMENTACION BOARD'),
+			    'IMPLEMENTACION BOARD'[Fecha de Contratacion] >= PreviousMonthStart &&
+			    'IMPLEMENTACION BOARD'[Fecha de Contratacion] <= PreviousMonthEnd
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: 250f5549-9a55-4b06-97bb-3345f0cd2220
+
+	measure 'Mes anterior nuevas Licencias' = ```
+			
+			VAR CurrentDate = TODAY()
+			VAR PreviousMonthStart = EOMONTH(CurrentDate, -2) + 1
+			VAR PreviousMonthEnd = EOMONTH(CurrentDate, -1)
+			
+			RETURN
+			CALCULATE (
+			    COUNTROWS ('IMPLEMENTACION BOARD'),
+			    'IMPLEMENTACION BOARD'[Board Column] = "Nuevas Licencias" >= PreviousMonthStart &&
+			    'IMPLEMENTACION BOARD'[Board Column] = "Nuevas Licencias" <= PreviousMonthEnd
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 9fbcf733-1652-48f1-afc2-18d0d47175bd
+
+	measure 'Licencias ADICIONALES Mes Actual' = ```
+			
+			CALCULATE(
+			    COUNTROWS('IMPLEMENTACION BOARD'),
+			    'IMPLEMENTACION BOARD'[Board Column] = "Nuevas licencias",
+			    'IMPLEMENTACION BOARD'[Fecha de Inicio] >= DATE(YEAR(TODAY()), MONTH(TODAY()), 1),
+			    'IMPLEMENTACION BOARD'[Fecha de Inicio] <= EOMONTH(TODAY(), 0)
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 10f761cf-3837-477b-bc2a-a639163b60d0
+
+	measure 'Licencias ADICIONALES Mes Anterior' = ```
+			
+			CALCULATE(
+			    COUNTROWS('IMPLEMENTACION BOARD'),
+			    'IMPLEMENTACION BOARD'[Board Column] = "Nuevas licencias",
+			    'IMPLEMENTACION BOARD'[Fecha de Inicio] >= DATE(YEAR(TODAY()), MONTH(TODAY()) - 1, 1),
+			    'IMPLEMENTACION BOARD'[Fecha de Inicio] <= EOMONTH(TODAY(), -1)
+			)
+			
+			```
+		formatString: 0
+		lineageTag: ba508c0b-a4d4-4e9b-ad18-51697965419a
+
+	column zmedidas
+		lineageTag: dff60c84-c255-47fa-b571-ee6b0a2175a0
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [zmedidas]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Medidas TEMPORALES' = calculated
+		mode: import
+		source = ```
+				
+				ROW("zmedidas", "medida ejemplo")
+				
+				```
+
+	annotation PBI_Id = c9601686105a42b6acf9623ff4da83e5
+
